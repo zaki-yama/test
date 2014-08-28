@@ -3,9 +3,7 @@ import urllib
 
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.views.generic.base import TemplateView
 from django.template import Context, loader
-from django.shortcuts import render
 from django.core.context_processors import csrf
 
 from google.appengine.api import users
@@ -27,7 +25,6 @@ def main_page(request):
 			ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
 	greetings = greetings_query.fetch(10)
 
-
 	""" 変更点: for greeting in ...は不要 """
 
 	if users.get_current_user():
@@ -47,6 +44,7 @@ def main_page(request):
 			})
 	template_values.update(csrf(request))
 	return HttpResponse(loader.get_template('guestbook/main_page.html').render(template_values))
+
 
 def sign_post(request):
 	if request.method == 'POST':
