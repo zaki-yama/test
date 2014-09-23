@@ -1,4 +1,5 @@
 .DS_Store*
 .metadata
 *.pyc
+.idea
 index.yaml
