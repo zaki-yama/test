@@ -1,0 +1,19 @@
+<html>
+<head>
+</head>
+<body>
+	<form action="/class_based_view_csrf/view1/" method="post">
+		<!-- works when uncomment this -->
+		<!-- {% csrf_token %} -->
+		<div><input type="submit" value="Class-based View1(Fail)"></div>
+	</form>
+	<form action="/class_based_view_csrf/view2/" method="post">
+		<!-- {% csrf_token %} -->
+		<div><input type="submit" value="Class-based View2(Success)"></div>
+	</form>
+	<form action="/class_based_view_csrf/view3/" method="post">
+		<!-- {% csrf_token %} -->
+		<div><input type="submit" value="Class-based View3(This also works)"></div>
+	</form>
+</body>
+</html>
