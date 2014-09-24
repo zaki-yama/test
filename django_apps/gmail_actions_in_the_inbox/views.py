@@ -5,10 +5,13 @@ from urlparse import urlparse
 from google.appengine.api import mail
 from google.appengine.api import users
 
-from django.http import HttpResponse, HttpResponseServerError
-from django.shortcuts import redirect
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.shortcuts import render, redirect
 from django.template import Context, loader
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
+
+from .models import Review
 
 
 logger = logging.getLogger(__name__)
@@ -48,3 +51,45 @@ class EmailSenderView(View):
 			return HttpResponse('OK')
 		except:
 			return HttpResponseServerError()
+
+
+class ReviewHandlerView(View):
+
+	def get(self, request):
+		# retrieve up to 1000 reviews from the Datastore
+		reviews = Review.query().fetch(1000)
+
+		if not reviews:
+			return HttpResponse('No reviews')
+
+		total = 0
+		count = len(reviews)
+		response = HttpResponse()
+
+		for r in reviews:
+			total += r.rating_value
+			review_body = r.review_body or 'No feedback'
+			response.write('%d/5 - %s<br />' % (r.rating_value, review_body))
+
+		response.write('<br />')
+		response.write('%d reviews - Average rating %.2f/5' % (count, total / float(count)))
+
+		return response
+
+	def post(self, request):
+		rating_value = request.POST.get('review.reviewRating.ratingValue')
+		review_body = request.POST.get('review.reviewBody')
+
+		# the numeric rating is required
+		if not rating_value:
+			return HttpResponseBadRequest()
+
+		# insert the review into the Datastore
+		review = Review(rating_value=int(rating_value), review_body=review_body)
+		review.put()
+
+		return HttpResponse('OK')
+
+	@csrf_exempt
+	def dispatch(self, *args, **kwargs):
+		return super(ReviewHandlerView, self).dispatch(*args, **kwargs)
