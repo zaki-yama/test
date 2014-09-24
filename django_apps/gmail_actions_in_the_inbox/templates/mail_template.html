@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>Did you enjoy Google Cafe?</title>
+</head>
+<body>
+	<script type="application/ld+json">
+    {
+      "@context":               "http://schema.org",
+      "@type":                  "Restaurant",
+      "name":                   "Google Cafe",
+      "action": {
+        "@type":                "ReviewAction",
+        "review": {
+          "@type":              "Review",
+          "reviewRating": {
+            "@type":            "Rating",
+            "bestRating":       "5",
+            "worstRating":      "1"
+          }
+        },
+        "handler": {
+          "@type":              "HttpActionHandler",
+          "url":                "{{ review_url }}",
+          "encoding": {
+            "url":              "http://schema.org/Encoding/UrlEncoded"
+          },
+          "method":             "http://schema.org/HttpRequestMethod/POST",
+          "requiredProperty": {
+            "@type":            "Property",
+            "name":             "review.reviewRating.ratingValue"
+          },
+          "optionalProperty": {
+            "@type":            "Property",
+            "name":             "review.reviewBody"
+          }
+        }
+      }
+    }
+	</script>
+	<p>
+	Dear John, please rate Google Cafe between 1 and 5 stars and, optionally, add a text comment.
+	</p>
+</body>
+</html>
