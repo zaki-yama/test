@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
+from django.utils.decorators import method_decorator
 
 from .models import Review
 
@@ -90,6 +91,6 @@ class ReviewHandlerView(View):
 
 		return HttpResponse('OK')
 
-	@csrf_exempt
+	@method_decorator(csrf_exempt)
 	def dispatch(self, *args, **kwargs):
 		return super(ReviewHandlerView, self).dispatch(*args, **kwargs)
