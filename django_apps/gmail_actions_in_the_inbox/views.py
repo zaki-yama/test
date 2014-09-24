@@ -32,7 +32,7 @@ class EmailSenderView(View):
 		# the review url corresponds to the App Engine app url
 		pr = urlparse(request.build_absolute_uri())
 		app_name = request.resolver_match.app_name
-		review_url = '%s://%s/' % (pr.scheme, pr.netloc)
+		review_url = '%s://%s/%s/' % (pr.scheme, pr.netloc, app_name)
 
 		# load the email template and replace the placeholder with the review url
 		template = loader.get_template('mail_template.html')
