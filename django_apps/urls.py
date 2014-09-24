@@ -6,7 +6,7 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
-	url(r'^gmail_actions_in_the_inbox/', include('gmail_actions_in_the_inbox.urls', app_name='gmail_actions_in_the_inbox', namespace='gmail_actions_in_the_inbox')),
+	url(r'^gmail_actions_in_the_inbox/', include('gmail_actions_in_the_inbox.urls', app_name='gmail_actions_in_the_inbox')),
 	url(r'^', include('guestbook.urls')),
     # url(r'^gae_django_app/', include('gae_django_app.foo.urls')),
 
