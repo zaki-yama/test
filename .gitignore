@@ -3,3 +3,9 @@
 *.pyc
 .idea
 index.yaml
+
+bin
+libs
+parts
+.installed.cfg
+.buildout-*
