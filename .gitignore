@@ -2,6 +2,7 @@
 .metadata
 *.pyc
 .idea
+.cache
 index.yaml
 
 bin
