@@ -3,6 +3,7 @@
 *.pyc
 .idea
 .cache
+.bak
 index.yaml
 
 bin
