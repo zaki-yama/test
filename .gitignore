@@ -8,6 +8,7 @@ index.yaml
 
 bin
 libs
+client_secrets.json
 parts
 .installed.cfg
 .buildout-*
