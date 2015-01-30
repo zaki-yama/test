@@ -6,6 +6,7 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
+	url(r'^contention_sample/', include('contention_sample.urls')),
 	url(r'^class_based_view_csrf/', include('class_based_view_csrf.urls')),
 	url(r'^', include('guestbook.urls')),
     # url(r'^gae_django_app/', include('gae_django_app.foo.urls')),
