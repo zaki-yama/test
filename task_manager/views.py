@@ -8,7 +8,7 @@ from google.appengine.api import users
 
 from apiclient.discovery import build
 from oauth2client import xsrfutil
-from oauth2client.appengine import StorageByKeyName
+from oauth2client.appengine import StorageByKeyName, OAuth2DecoratorFromClientSecrets
 from oauth2client.client import flow_from_clientsecrets
 
 from django.core.context_processors import csrf
@@ -29,23 +29,21 @@ FLOW = flow_from_clientsecrets(
 		CLIENT_SECRETS,
 		scope=SCOPE,
 		redirect_uri='http://localhost:8080/task_manager/oauth2callback')
+decorator = OAuth2DecoratorFromClientSecrets(
+		os.path.join(os.path.dirname(__file__), '..', 'client_secrets.json'))
 
 
 class MainView(View):
 	template_name = 'task_manager/index.html'
 
+	@decorator.oauth_aware
 	def get(self, request):
-		user = users.get_current_user()
-		storage = StorageByKeyName(
-				CredentialsModel, user.email(), 'credentials')
-		credentials = storage.get()
-		if credentials is None or credentials.invalid == True:
-			FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
-					user)
-			authorize_url = FLOW.step1_get_authorize_url()
-			logging.info(authorize_url)
-			return HttpResponseRedirect(authorize_url)
-		else:
+		# user = users.get_current_user()
+		# storage = StorageByKeyName(
+				# CredentialsModel, user.email(), 'credentials')
+		# credentials = storage.get()
+		# if credentials is None or credentials.invalid == True:
+		if decorator.has_credentials():
 			http = httplib2.Http()
 			http = credentials.authorize(http)
 			service = build('tasks', 'v1', http=http)
@@ -56,6 +54,12 @@ class MainView(View):
 					}
 			template_values.update(csrf(request))
 			return render(request, self.template_name, template_values)
+		else:
+			# FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
+					# user)
+			authorize_url = decorator.authorize_url()
+			logging.info(authorize_url)
+			return HttpResponseRedirect(authorize_url)
 
 
 class AuthView(View):
