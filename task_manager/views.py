@@ -41,9 +41,9 @@ class MainView(View):
 		storage = StorageByKeyName(
 				CredentialsModel, user.email(), 'credentials')
 		credentials = storage.get()
-		if credentials is None or credentials.invalid == True:
-			FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
-					user)
+		if credentials is None or credentials.invalid is True:
+			FLOW.params['state'] = xsrfutil.generate_token(
+					settings.SECRET_KEY, user)
 			authorize_url = FLOW.step1_get_authorize_url()
 			logging.info(authorize_url)
 			return HttpResponseRedirect(authorize_url)
