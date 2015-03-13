@@ -22,8 +22,6 @@ from utils.login import login_required
 
 logger = logging.getLogger(__name__)
 
-service = build('tasks', 'v1')
-
 SCOPE = 'https://www.googleapis.com/auth/tasks'
 CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'client_secrets.json')
 FLOW = flow_from_clientsecrets(
@@ -40,8 +38,10 @@ class MainView(View):
 		user = users.get_current_user()
 		storage = StorageByKeyName(
 				CredentialsModel, user.email(), 'credentials')
+		# logger.info(type(storage))
 		credentials = storage.get()
-		if credentials is None or credentials.invalid is True:
+		# logger.info(type(credentials))
+		if credentials is None or credentials.access_token_expired:
 			FLOW.params['state'] = xsrfutil.generate_token(
 					settings.SECRET_KEY, user)
 			authorize_url = FLOW.step1_get_authorize_url()
