@@ -17,6 +17,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import View
 
 from .models import CredentialsModel
+from utils.login import login_required
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,7 @@ FLOW = flow_from_clientsecrets(
 class MainView(View):
 	template_name = 'task_manager/index.html'
 
+	@login_required
 	def get(self, request):
 		user = users.get_current_user()
 		storage = StorageByKeyName(
@@ -51,6 +53,7 @@ class MainView(View):
 			service = build('tasks', 'v1', http=http)
 			tasks = service.tasks().list(tasklist='@default').execute(http=http)
 			template_values={
+					'logout_url': users.create_logout_url(request.get_full_path()),
 					'app_name':request.resolver_match.app_name,
 					'tasks':tasks['items'],
 					}
